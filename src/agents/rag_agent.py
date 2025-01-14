@@ -5,6 +5,8 @@ Documents from the repository of Jornada de Dados
 """
 
 import sys
+import asyncio
+from collections.abc import AsyncGenerator
 from dataclasses import dataclass
 
 import asyncpg
@@ -37,7 +39,7 @@ usuário
 """
 
 agent = Agent(
-    'openai:gpt-4o',
+    'openai:gpt-3.5-turbo',
     system_prompt=system_prompt,
     deps_type=Deps,
     result_type=str,
@@ -69,14 +71,14 @@ async def retrieve(context: RunContext[Deps], search_query: str) -> str:
     )
 
     return '\n\n'.join(
-        f'# Pasta raiz: {row["folder"]}\nConteudo:\n{row["content"]}\n'
+        f'Conteudo:\n{row["content"]}\n'
         for row in rows
     )
 
 
-async def stream_messages(question: str):
+async def stream_messages(question: str) -> AsyncGenerator[str, None]:
     """
-    Stream messages for use in Streamlit interface.
+    Stream messages for Streamlit interface.
     """
     openai = AsyncOpenAI()
 
@@ -108,6 +110,6 @@ if __name__ == '__main__':
             q = sys.argv[2]
         else:
             q = 'Qual problema é resolvido no workshop de kafka?'
-        # asyncio.run(run_agent(q))
+        asyncio.run(run_agent(q))
     else:
-        print('Exiting')  # Change this message as needed
+        print('Exiting')
