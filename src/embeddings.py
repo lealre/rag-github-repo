@@ -6,7 +6,6 @@ import asyncio
 import json
 import os
 from dataclasses import dataclass
-from pathlib import Path
 
 import asyncpg
 import pydantic_core
@@ -41,12 +40,12 @@ async def insert_record(
 ) -> None:
     async with sem:
         print(f'Populating {record.folder}')
-        embedding = await openai.embeddings.create(
+        response = await openai.embeddings.create(
             input=record.content,
             model='text-embedding-3-small',
         )
 
-        embedding = embedding.data[0].embedding
+        embedding = response.data[0].embedding
         embedding_json = pydantic_core.to_json(embedding).decode()
         await pool.execute(
             """
@@ -60,12 +59,11 @@ async def insert_record(
 
 
 if __name__ == '__main__':
-
     folder = 'data'
     file = 'final_data.json'
-    file_path = os.path.join(folder, file)
+    file_path: str = os.path.join(folder, file)
 
-    with open(file_path, 'r', encoding='utf-8') as file:
-        data: dict[str, list[str]] = json.load(file)
+    with open(file_path, 'r', encoding='utf-8') as json_file:
+        data: dict[str, list[str]] = json.load(json_file)
 
     asyncio.run(populate_db(data))

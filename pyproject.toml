@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "asyncpg>=0.30.0",
+    "mypy>=1.14.1",
     "pgvector>=0.3.6",
     "pydantic-ai>=0.0.14",
     "pydantic-settings>=2.7.1",
@@ -26,3 +27,9 @@ ignore = ['PLR2004']
 [tool.ruff.format]
 preview = true
 quote-style = 'single'
+
+[tool.mypy]
+strict = true
+show_error_codes = true
+pretty = true
+ignore_missing_imports = true

@@ -27,7 +27,7 @@ async def async_fetch(values: list[str], key: str) -> list[RunResult]:
 
 
 async def generate_context(data: dict[str, list[str]]) -> dict[str, list[str]]:
-    json_to_save = defaultdict(list[str])
+    json_to_save: dict[str, list[str]] = defaultdict(list[str])
     keys_to_fetch_sync: list[str] = []
     max_tokens_per_minute: int = 25000
     tokens_used: int = 0

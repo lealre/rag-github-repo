@@ -30,7 +30,9 @@ def split_in_root_folders(input_path: str | Path) -> dict[str, list[str]]:
 
     folder_names = re.findall(file_pattern, content)
 
-    folders_content = {key: [] for key in set(folder_names)}
+    folders_content: dict[str, list[str]] = {
+        key: [] for key in set(folder_names)
+    }
 
     files = content.split('File: /')
 
@@ -65,7 +67,7 @@ def aggregate_files_by_token(
              are lists of aggregated strings that comply with the token
              limit.
     """
-    token_grouped_files = defaultdict(list[str])
+    token_grouped_files: dict[str, list[str]] = defaultdict(list[str])
 
     for key, value in data.items():
         cumulative_string = ''

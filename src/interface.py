@@ -8,7 +8,7 @@ from src.agents.rag_agent import stream_messages
 
 
 async def stream_response(prompt: str) -> list[str]:
-    message_chunks: list = []
+    message_chunks: list[str] = []
     async for chunk in stream_messages(prompt):
         message_chunks.append(chunk)
 

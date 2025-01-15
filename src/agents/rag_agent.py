@@ -4,8 +4,8 @@ RAG example from LangChain using pgvector as database
 Documents from the repository of Jornada de Dados
 """
 
-import sys
 import asyncio
+import sys
 from collections.abc import AsyncGenerator
 from dataclasses import dataclass
 
@@ -55,25 +55,22 @@ async def retrieve(context: RunContext[Deps], search_query: str) -> str:
         search_query: The search query.
     """
 
-    embedding = await context.deps.openai.embeddings.create(
+    response = await context.deps.openai.embeddings.create(
         input=search_query,
         model='text-embedding-3-small',
     )
 
-    embedding = embedding.data[0].embedding
+    embedding = response.data[0].embedding
     embedding_json = pydantic_core.to_json(embedding).decode()
     rows = await context.deps.pool.fetch(
         """
         SELECT folder, content FROM repo
-        ORDER BY embedding <=> $1 LIMIT 2
+        ORDER BY embedding <=> $1 LIMIT 1
         """,
         embedding_json,
     )
 
-    return '\n\n'.join(
-        f'Conteudo:\n{row["content"]}\n'
-        for row in rows
-    )
+    return '\n\n'.join(f'Conteudo:\n{row["content"]}\n' for row in rows)
 
 
 async def stream_messages(question: str) -> AsyncGenerator[str, None]:
@@ -89,7 +86,7 @@ async def stream_messages(question: str) -> AsyncGenerator[str, None]:
                 yield message
 
 
-async def run_agent(question: str):
+async def run_agent(question: str) -> None:
     """
     Entry point to run the agent and perform RAG based question answering.
     """
