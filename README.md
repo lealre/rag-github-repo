@@ -38,13 +38,13 @@ The Docker Compose setup includes an `entrypoint.sh` file, which runs the Python
 1 - Clone the repo locally:
 
 ```shell
-git clone https://github.com/lealre/github-repo-agent.git
+git clone https://github.com/lealre/rag-github-repo.git
 ```
 
 2 - Access the project directory:
 
 ```shell
-cd github-repo-agent
+cd rag-github-repo
 ```
 
 3 - Create the `.env` file by renaming the `.env-example`:
