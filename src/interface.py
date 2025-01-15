@@ -15,7 +15,7 @@ async def stream_response(prompt: str) -> list[str]:
     return message_chunks
 
 
-st.title('Agente RAG - Repositório GitHub')
+st.title('Chat RAG - Repositório GitHub')
 
 if 'messages' not in st.session_state:
     st.session_state.messages = []
