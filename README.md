@@ -27,6 +27,8 @@ Although it serves as a simple way to implement a RAG using these tools, the ove
 
 The process used for embedding and extracting the vectors was based on the PydanticAI [RAG documentation example](https://ai.pydantic.dev/examples/rag/), and the chat does not pass the message history to the model.
 
+![](media/diagram.png)
+
 ## How to Run This Project
 
 This section shows how to run the project using Docker by building the two services together: the Chat interface and the PostgreSQL database.
@@ -62,3 +64,31 @@ docker compose up
 ```
 
 The application will be available at `http://localhost:8501/`.
+
+### Local commands
+
+The project uses [`uv`](https://docs.astral.sh/uv/) as the dependency manager.
+
+To chunk the data in `data/source.txt` and transform it into `data/data_chunks.json`, run the following command:
+
+```shell
+uv run -m src.preprocessing.chunk_splitter
+```
+
+To use the Agent to provide more context to the chunks and generate `data/final_data.json`, run:
+
+```shell
+uv run -m src.preprocessing.context_generator
+```
+
+To create the database table, run:
+
+```shell
+uv run -m src.core.database
+```
+
+To generate the embeddings in the database, run:
+
+```shell
+uv run -m src.embeddings
+```
