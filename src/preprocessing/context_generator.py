@@ -8,6 +8,7 @@ from pydantic_ai import Agent
 from pydantic_ai.result import RunResult
 
 from src.agents.contextual_agent import contextual_agent
+from src.core.settings import settings
 from src.preprocessing.chunk_splitter import (
     num_tokens_from_string,
     save_as_json,
@@ -29,7 +30,6 @@ async def async_fetch(values: list[str], key: str) -> list[RunResult]:
 async def generate_context(data: dict[str, list[str]]) -> dict[str, list[str]]:
     json_to_save: dict[str, list[str]] = defaultdict(list[str])
     keys_to_fetch_sync: list[str] = []
-    max_tokens_per_minute: int = 25000
     tokens_used: int = 0
 
     for key in data.keys():
@@ -40,14 +40,14 @@ async def generate_context(data: dict[str, list[str]]) -> dict[str, list[str]]:
 
         total_tokens = sum([num_tokens_from_string(value) for value in values])
 
-        if total_tokens > max_tokens_per_minute:
+        if total_tokens > settings.MAX_TOKENS_PER_MINUITE:
             print(
                 f'Async process skipped for {key} due to the number of tokens.'
             )
             keys_to_fetch_sync.append(key)
             continue
 
-        if (total_tokens + tokens_used) > max_tokens_per_minute:
+        if (total_tokens + tokens_used) > settings.MAX_TOKENS_PER_MINUITE:
             tokens_used = 0
             print('Waiting 60 seconds due to TPM limit...')
             time.sleep(60)
@@ -73,7 +73,7 @@ async def generate_context(data: dict[str, list[str]]) -> dict[str, list[str]]:
         for n, value in enumerate(values):
             total_tokens = num_tokens_from_string(value)
 
-            if (total_tokens + tokens_used) > max_tokens_per_minute:
+            if (total_tokens + tokens_used) > settings.MAX_TOKENS_PER_MINUITE:
                 tokens_used = 0
                 print('Waiting 60 seconds due to TPM limit...')
                 time.sleep(60)

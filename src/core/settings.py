@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     )
 
     DATABASE_URL: str = 'postgresql://admin:admin@localhost:5432/vector_db'
+    MAX_TOKENS_PER_MINUITE: int = 25000
 
 
 settings = Settings()
